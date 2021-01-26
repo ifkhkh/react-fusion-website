@@ -1,5 +1,5 @@
 import React from "react";
-import {Test} from "./index";
+import {Test, AsmCode} from "./index";
 
 const Error = function () {
 
@@ -13,6 +13,11 @@ const routeMap = [
     {
         path: '/',
         component: Test,
+        exact: true,
+    },
+    {
+        path: '/asm_code',
+        component: AsmCode,
         exact: true,
     },
     {

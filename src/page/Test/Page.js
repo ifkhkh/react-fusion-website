@@ -1,11 +1,12 @@
 import React from "react";
 import './page.css'
+import {Link} from "react-router-dom"
 
 const Page = function () {
 
     return (
         <div>
-            Test
+            <Link to={'asm_code'}>asm_code</Link>
         </div>
     )
 }
