@@ -11,6 +11,7 @@ module.exports = {
         node: true,
     },
     // Parsing error: the keyword 'import' is reserved
+    // https://github.com/yannickcr/eslint-plugin-react/issues/447
     parserOptions: {
         ecmaVersion: 7,
         sourceType: 'module',
