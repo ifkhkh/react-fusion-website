@@ -1,6 +1,6 @@
-import React, {useState} from "react"
+import React, { useState } from 'react'
 import _style from './index.module.css'
-import {Button} from "@alifd/next"
+import { Button } from '@alifd/next'
 
 const Index = function () {
     const [text, setText] = useState('asm code 页面, 点我')
