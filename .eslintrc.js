@@ -4,7 +4,7 @@ module.exports = {
     rules: {
         indent: ['error', 4],
         quotes: ['error', 'single'],
-        semi: ['error', 'always'],
+        semi: [0],
     },
     env: {
         // 设置了这个为 true 之后，就不会报 module is not define 的错
@@ -21,4 +21,4 @@ module.exports = {
             modules: true,
         },
     },
-};
+}
