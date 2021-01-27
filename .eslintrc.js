@@ -1,20 +1,7 @@
 module.exports = {
-    extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:prettier/recommended'],
-    plugins: ['react-hooks', 'prettier'],
-
+    extends: ['eslint:recommended', 'plugin:react/recommended'],
+    plugins: ['react-hooks'],
     rules: {
-        // 自定义 prettier 规则
-        'prettier/prettier': [
-            'error',
-            {
-                semi: true,
-                trailingComma: 'all',
-                singleQuote: true,
-                tabWidth: 4,
-                printWidth: 100,
-                endOfLine: 'auto',
-            },
-        ],
         indent: ['error', 4],
         quotes: ['error', 'single'],
         semi: ['error', 'always'],
