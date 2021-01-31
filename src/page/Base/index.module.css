@@ -1,0 +1,18 @@
+.nav {
+    padding: 0 20px !important;
+}
+
+.main {
+    display: flex;
+    height: calc(100vh - 44px);
+    width: 100%;
+}
+
+.menu {
+    width: 180px;
+}
+
+.content {
+    width: calc(100% - 180px);
+    padding: 20px;
+}

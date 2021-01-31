@@ -1,6 +1,5 @@
-import Test from './Test/Page'
+import Login from './Login'
+import Base from './Base'
 import AsmCode from './AsmCode'
-export {
-    Test,
-    AsmCode,
-}
+
+export { Login, Base, AsmCode }
