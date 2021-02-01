@@ -1,18 +1,18 @@
-import React from "react";
-import {Test, AsmCode} from "./index";
+import React from 'react'
+import { AsmCode, Login } from './index'
 
 const Error = function () {
-
-    return (
-        <div>404</div>
-    )
+    return <div>404</div>
 }
 
+const Index = function () {
+    return <div>首页</div>
+}
 
 const routeMap = [
     {
         path: '/',
-        component: Test,
+        component: Index,
         exact: true,
     },
     {
@@ -25,7 +25,6 @@ const routeMap = [
         component: Error,
         exact: true,
     },
-
 ]
 
 export default routeMap
