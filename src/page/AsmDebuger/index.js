@@ -6,39 +6,36 @@ import axeVM from './x16vm'
 
 const log = console.log.bind(console)
 
+const code = `
+jump @1024
+.memory 1024
+set2 f1 3
+jump @__main
+@__main
+.var2 a3 1
+set2 a1 3
+set2 a2 2
+halt
+`
+
 function AsmDebuger() {
-    const [memory, setMemory] = React.useState(() => {
-        let cpu = axePU.new('set2 a1 1')
-        cpu.run()
-        let m = [...cpu.memory]
-        if (m.slice(-1)[0] !== 255) {
-            m.push(255)
-        }
+    const [memory, setMemory] = React.useState([])
 
-        let length = 100 - m.length
-        for (let i = 0; i < length; i++) {
-            m.push(0)
-        }
-
-        return m
-    })
-    const code = `
-    .var2 a1
-    set2 a1 1
-    `
     const ref = React.useRef(null)
     const [asm_code, setAsm_code] = React.useState(code)
     const [asm, setAsm] = React.useState({})
     const [vm, setVm] = React.useState({})
     const [compiled, setCompiled] = React.useState(false)
     const [regs, setRegs] = React.useState({ pa: 0, a1: 0, a2: 0, a3: 0, c1: 0, f1: 0 })
+    const [selection, setSelection] = React.useState({ start: 0, end: 0 })
 
     const handleAsmCode = (v) => {
         setAsm_code(v)
     }
 
     const handleAxeCompile = () => {
-        let cpu = axePU.new(asm_code)
+        let code = asm_code.trim()
+        let cpu = axePU.new(code)
         let done = cpu.run()
         if (!done) {
             alert('asm_code 错误指令')
@@ -49,9 +46,11 @@ function AsmDebuger() {
         if (cpu.memory.slice(-1)[0] !== 255) {
             m.push(255)
         }
-        setMemory([...m, ...Array(100 - m.length).fill(0)])
+        // setMemory([...m, ...Array(100 - m.length).fill(0)])
+        setMemory([...m])
+        setAsm_code(cpu.formattedCode)
         setAsm(cpu)
-        // log(cpu.selection)
+
         let vm = axeVM.new(m)
         setVm(vm)
         setCompiled(true)
@@ -59,36 +58,69 @@ function AsmDebuger() {
 
     const textAreaFocus = () => {
         let node = ref.current.getInputNode()
-        node.selectionStart = asm.selection[0].start
-        node.selectionEnd = asm.selection[0].end
+        let index = regs.pa
+        node.selectionStart = selection.start
+        node.selectionEnd = selection.end
+
+        if (asm.selection[index] !== undefined) {
+            log(asm.selection[index])
+            node.selectionStart = asm.selection[index].start
+            node.selectionEnd = asm.selection[index].end
+            setSelection({
+                start: asm.selection[index].start,
+                end: asm.selection[index].end,
+            })
+            node.focus()
+        }
+        //log(node.selectionStart, node.selectionEnd)
         node.focus()
     }
 
     const handleAxeRun = () => {
-        vm.run()
-        setRegs(vm.regs)
+        let done = vm.run()
+        setMemory([...vm.memory.slice(0, memory.length)])
+        setRegs({ ...vm.regs })
+        textAreaFocus()
     }
 
     return (
         <Box>
             <Input.TextArea
+                autoHeight
                 ref={ref}
                 placeholder={'input'}
                 value={asm_code}
                 onChange={handleAsmCode}
             />
             <div>
-                <Button onClick={handleAxeCompile}>提交</Button>
-                {compiled && <Button onClick={handleAxeRun}>next</Button>}
+                {compiled ? (
+                    <Button onClick={handleAxeRun}>next</Button>
+                ) : (
+                    <Button onClick={handleAxeCompile}>compile</Button>
+                )}
             </div>
             {compiled && (
                 <>
+                    <Table dataSource={[regs]}>
+                        <Table.Column title="pa" dataIndex="pa" />
+                        <Table.Column title="a1" dataIndex="a1" />
+                        <Table.Column title="a2" dataIndex="a2" />
+                        <Table.Column title="a3" dataIndex="a3" />
+                        <Table.Column title="c1" dataIndex="c1" />
+                        <Table.Column title="f1" dataIndex="f1" />
+                    </Table>
                     <div className={_style.box}>
                         {memory.map((m, i) => {
                             return (
                                 <div className={_style.cell} key={i}>
                                     <Balloon
-                                        trigger={<span>{m}</span>}
+                                        trigger={
+                                            <span
+                                                className={regs.pa === i ? _style.paHighLight : ''}
+                                            >
+                                                {m}
+                                            </span>
+                                        }
                                         closable={false}
                                         triggerType="hover"
                                     >
@@ -98,14 +130,6 @@ function AsmDebuger() {
                             )
                         })}
                     </div>
-                    <Table dataSource={[regs]}>
-                        <Table.Column title="pa" dataIndex="pa" />
-                        <Table.Column title="a1" dataIndex="a1" />
-                        <Table.Column title="a2" dataIndex="a2" />
-                        <Table.Column title="a3" dataIndex="a3" />
-                        <Table.Column title="c1" dataIndex="c1" />
-                        <Table.Column title="f1" dataIndex="f1" />
-                    </Table>
                 </>
             )}
         </Box>

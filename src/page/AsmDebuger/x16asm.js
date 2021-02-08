@@ -4,6 +4,7 @@ const log = console.log.bind(console)
 export default class AxePU {
     constructor(asm) {
         this.asm = asm
+        this.formattedCode = asm
         this.memory = []
         this.registers = {
             pa: 0,
@@ -14,6 +15,7 @@ export default class AxePU {
             f1: 80,
         }
         this.selection = {}
+        this.preSelected = {}
         this.label_address = {}
         this.varMap = {}
         this.localOffset = 0
@@ -134,15 +136,15 @@ export default class AxePU {
     fake_instruction_return(code) {
         let list = []
         let n = this.localOffset + 2
-        if (code.length() > 1) {
+        if (code.length > 1) {
             let v = code[1]
             let offset = this.localOffset - this.varMap[this.current][v]
-            let t = [`set2 a3 {}`.format(offset), `subtract2 f1 a3 a3`, `load_from_register2 a3 a1`]
+            let t = [`set2 a3 ${offset}`, `subtract2 f1 a3 a3`, `load_from_register2 a3 a1`]
             list.push(...t)
         }
 
         let t = [
-            `set2 a3 {}`.format(n),
+            `set2 a3 ${n}`,
             `subtract2 f1 a3 f1`,
             `load_from_register2 f1 a2`,
             `jump_from_register a2`,
@@ -307,7 +309,10 @@ export default class AxePU {
         }
         let lines = asm.split('\n')
 
-        for (let line of lines) {
+        let offset = 0
+
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i]
             let code = line.split(' ')
             let op = code[0]
             if (op.startsWith('@function')) {
@@ -317,8 +322,21 @@ export default class AxePU {
             if (op[0] === '.' && mapper[op] !== undefined) {
                 let newLine = mapper[op](code)
                 result.push(...newLine)
+
+                // offset 是处理之后的行号, line 是处理之前的行号
+                this.preSelected[offset] = {
+                    line: i,
+                    length: line.length,
+                }
+                offset += newLine.length
             } else {
                 result.push(line)
+
+                this.preSelected[offset] = {
+                    line: i,
+                    length: line.length,
+                }
+                offset += 1
             }
             // log(line, this.localOffset, this.varMap, this.current,)
         }
@@ -327,27 +345,43 @@ export default class AxePU {
 
     preprocess(code) {
         code = this.cleanCode(code)
+        this.formattedCode = code
         code = this.process_fake_instruction(code)
         return code
+    }
+
+    asmOffsetMapper(index, offset, lineStart) {
+        if (this.preSelected[index] !== undefined) {
+            const { length } = this.preSelected[index]
+            this.selection[offset] = {
+                start: lineStart,
+                end: lineStart + length,
+            }
+            lineStart += length + 1
+        }
+        return lineStart
     }
 
     run() {
         let asm = this.asm
         let lines = this.preprocess(asm)
+
         lines = lines.split('\n')
         let regs = this.registers
         let offset = 0
-        for (let e of lines) {
-            let code = e.trim()
-            if (code === '') {
+
+        let lineStart = 0
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i]
+            line = line.trim()
+            if (line === '') {
                 continue
             }
-            code = code.split(' ')
+            let code = line.split(' ')
             let op = code[0]
-            this.selection[this.memory.length] = {
-                start: offset,
-                end: e.trim().length,
-            }
+
+            // 记录 pa 和 line 的映射
+            lineStart = this.asmOffsetMapper(i, offset, lineStart)
 
             if (op[0] === '@') {
                 // 处理 label
@@ -573,7 +607,7 @@ export default class AxePU {
             }
         }
 
-        log(this.varMap)
+        log('varMap', this.varMap)
         return this.memory
     }
 }

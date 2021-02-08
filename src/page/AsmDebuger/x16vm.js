@@ -90,7 +90,7 @@ export default class AxePUVM {
         if (op === 255) {
             this.pa_plus(1)
             log('halt', this.regs)
-            return
+            return true
         } else if (op === 0) {
             // set a1 1
             let reg = this.memory[pa + 1]
@@ -253,7 +253,7 @@ export default class AxePUVM {
             this.set_register(r3, val)
         } else {
             log('xxx error', op)
-            return
+            return true
         }
     }
 
