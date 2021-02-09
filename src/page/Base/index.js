@@ -55,6 +55,9 @@ const Base = function () {
                         <Menu.Item key="sub-1">
                             <Link to={'/asm_code'}>asm_code</Link>
                         </Menu.Item>
+                        <Menu.Item key="sub-2">
+                            <Link to={'/asm'}>asm_code</Link>
+                        </Menu.Item>
                     </Menu.SubMenu>
                 </Menu>
                 <div className={_style.content}>

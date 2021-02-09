@@ -1,5 +1,5 @@
 import React from 'react'
-import { Balloon, Box, Button, Input, List, Table } from '@alifd/next'
+import { Balloon, Button, Grid, Input, Table } from '@alifd/next'
 import _style from './index.module.css'
 import axePU from './x16asm'
 import axeVM from './x16vm'
@@ -19,15 +19,15 @@ halt
 `
 
 function AsmDebuger() {
-    const [memory, setMemory] = React.useState([])
-
     const ref = React.useRef(null)
+    const [memory, setMemory] = React.useState([])
     const [asm_code, setAsm_code] = React.useState(code)
     const [asm, setAsm] = React.useState({})
     const [vm, setVm] = React.useState({})
     const [compiled, setCompiled] = React.useState(false)
     const [regs, setRegs] = React.useState({ pa: 0, a1: 0, a2: 0, a3: 0, c1: 0, f1: 0 })
     const [selection, setSelection] = React.useState({ start: 0, end: 0 })
+    const [running, setRunning] = React.useState(true)
 
     const handleAsmCode = (v) => {
         setAsm_code(v)
@@ -63,14 +63,13 @@ function AsmDebuger() {
         node.selectionEnd = selection.end
 
         if (asm.selection[index] !== undefined) {
-            log(asm.selection[index])
             node.selectionStart = asm.selection[index].start
             node.selectionEnd = asm.selection[index].end
             setSelection({
                 start: asm.selection[index].start,
                 end: asm.selection[index].end,
             })
-            node.focus()
+            // node.focus()
         }
         //log(node.selectionStart, node.selectionEnd)
         node.focus()
@@ -78,61 +77,90 @@ function AsmDebuger() {
 
     const handleAxeRun = () => {
         let done = vm.run()
+        if (done) {
+            setRunning(false)
+        }
         setMemory([...vm.memory.slice(0, memory.length)])
         setRegs({ ...vm.regs })
         textAreaFocus()
     }
 
+    const handleClear = () => {
+        setAsm_code('')
+        setCompiled(false)
+        setRunning(true)
+    }
+
     return (
-        <Box>
-            <Input.TextArea
-                autoHeight
-                ref={ref}
-                placeholder={'input'}
-                value={asm_code}
-                onChange={handleAsmCode}
-            />
-            <div>
-                {compiled ? (
-                    <Button onClick={handleAxeRun}>next</Button>
-                ) : (
-                    <Button onClick={handleAxeCompile}>compile</Button>
-                )}
-            </div>
-            {compiled && (
-                <>
-                    <Table dataSource={[regs]}>
-                        <Table.Column title="pa" dataIndex="pa" />
-                        <Table.Column title="a1" dataIndex="a1" />
-                        <Table.Column title="a2" dataIndex="a2" />
-                        <Table.Column title="a3" dataIndex="a3" />
-                        <Table.Column title="c1" dataIndex="c1" />
-                        <Table.Column title="f1" dataIndex="f1" />
-                    </Table>
-                    <div className={_style.box}>
-                        {memory.map((m, i) => {
-                            return (
-                                <div className={_style.cell} key={i}>
-                                    <Balloon
-                                        trigger={
-                                            <span
-                                                className={regs.pa === i ? _style.paHighLight : ''}
-                                            >
-                                                {m}
-                                            </span>
-                                        }
-                                        closable={false}
-                                        triggerType="hover"
-                                    >
-                                        memory[{i}]
-                                    </Balloon>
-                                </div>
-                            )
-                        })}
+        <>
+            <Grid.Row>
+                <Grid.Col>
+                    <Input.TextArea
+                        rows={50}
+                        // autoHeight={true}
+                        ref={ref}
+                        placeholder={'input'}
+                        value={asm_code}
+                        onChange={handleAsmCode}
+                    />
+                    <div style={{ marginTop: 10 }}>
+                        {compiled ? (
+                            <>
+                                <Button
+                                    disabled={!running}
+                                    onClick={handleAxeRun}
+                                    style={{ marginRight: 5 }}
+                                >
+                                    next
+                                </Button>
+                                <Button onClick={handleClear}>clear</Button>
+                            </>
+                        ) : (
+                            <Button onClick={handleAxeCompile}>compile</Button>
+                        )}
                     </div>
-                </>
-            )}
-        </Box>
+                </Grid.Col>
+                <Grid.Col>
+                    {compiled && (
+                        <Table dataSource={[regs]}>
+                            <Table.Column title="pa" dataIndex="pa" />
+                            <Table.Column title="a1" dataIndex="a1" />
+                            <Table.Column title="a2" dataIndex="a2" />
+                            <Table.Column title="a3" dataIndex="a3" />
+                            <Table.Column title="c1" dataIndex="c1" />
+                            <Table.Column title="f1" dataIndex="f1" />
+                        </Table>
+                    )}
+
+                    {compiled && (
+                        <>
+                            <div className={_style.box}>
+                                {memory.map((m, i) => {
+                                    return (
+                                        <div
+                                            className={
+                                                regs.pa === i
+                                                    ? `${_style.cell} ${_style.paHighLight}`
+                                                    : _style.cell
+                                            }
+                                            key={i}
+                                        >
+                                            <Balloon
+                                                trigger={<span>{m}</span>}
+                                                closable={false}
+                                                triggerType="hover"
+                                            >
+                                                memory[{i}]
+                                            </Balloon>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </>
+                    )}
+                </Grid.Col>
+            </Grid.Row>
+        </>
     )
 }
 
