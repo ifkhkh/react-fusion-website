@@ -86,7 +86,7 @@ export default class AxePUVM {
     run() {
         let pa = this.regs['pa']
         let op = this.memory[pa]
-        log('pa op', pa, op)
+        // log('pa op', pa, op)
         if (op === 255) {
             this.pa_plus(1)
             log('halt', this.regs)
