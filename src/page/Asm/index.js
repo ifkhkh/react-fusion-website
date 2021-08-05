@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from '@alifd/next'
+import Title from '../../component/Title'
 
 const Asm = function () {
     const [text, setText] = useState('asm code 页面, 点我!')
@@ -8,6 +9,8 @@ const Asm = function () {
 
     return (
         <div>
+            <Title title="asm title" subTitle="hhhhh" borderColor="blue" />
+
             <Button onClick={handleChange}>{text}</Button>
         </div>
     )
