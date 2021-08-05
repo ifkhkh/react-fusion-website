@@ -1,5 +1,6 @@
 import React from 'react'
-import AsmCode from './Asmcode'
+import Asm from './Asm'
+// import AsmCode from './Asmcode'
 
 const Error = function () {
     return <div>404</div>
@@ -21,7 +22,8 @@ const routeMap = [
     },
     {
         path: '/asm_code',
-        component: AsmCode,
+        component: Asm,
+        // component: List,
         exact: true,
     },
     {
