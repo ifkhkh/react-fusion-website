@@ -1,8 +1,9 @@
 import React from 'react'
 import { Route, BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
-import { Base, Login } from './page'
 import './App.css'
 import { isLogin } from './utils/utils'
+import Login from './page/Login'
+import Base from './page/Base'
 
 const Authorized = function (props) {
     const { component: Component, notLogin } = props

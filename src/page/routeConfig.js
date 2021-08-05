@@ -1,5 +1,5 @@
 import React from 'react'
-import { AsmCode, Login } from './index'
+import AsmCode from './Asmcode'
 
 const Error = function () {
     return <div>404</div>
