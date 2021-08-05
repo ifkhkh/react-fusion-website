@@ -19,6 +19,11 @@ const List = function () {
 
     return (
         <div>
+            <div style={{ border: '1px solid red', margin: '10px 0' }}>
+                <h1>列表页面</h1>
+                <div style={{ margin: '10px 0' }}>这里现实的是一个列表页面</div>
+            </div>
+            {/* <Title title="列表页面" subTitle="这里现实的是一个列表页面" borderColor="#ff0000" /> */}
             <Table.StickyLock dataSource={data}>
                 <Table.Column title="Id" dataIndex="id" />
                 <Table.Column title="Name" dataIndex="name" />
