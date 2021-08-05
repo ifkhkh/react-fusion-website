@@ -24,6 +24,13 @@ const Base = function () {
         return <Route {...it} key={k} />
     })
 
+    const handleHighlight = (t) => {
+        const c = (t === window.location.pathname)
+        ? _style.menu_item : ''
+        console.log('cc', c)
+        return c
+    }
+
     return (
         <div>
             <div>
@@ -52,8 +59,11 @@ const Base = function () {
                         <Link to={'/'}>主页</Link>
                     </Menu.Item>
                     <Menu.SubMenu key="sub" label="子菜单">
-                        <Menu.Item key="sub-1">
+                        <Menu.Item key="sub-1" className={handleHighlight('/asm_code')}>
                             <Link to={'/asm_code'}>asm_code</Link>
+                        </Menu.Item>
+                        <Menu.Item key="sub-2" className={handleHighlight('/list')}>
+                            <Link to={'/list'}>List</Link>
                         </Menu.Item>
                     </Menu.SubMenu>
                 </Menu>

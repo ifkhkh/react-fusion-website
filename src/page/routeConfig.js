@@ -9,6 +9,10 @@ const Index = function () {
     return <div>首页</div>
 }
 
+const List = function() {
+    return <div>list</div>
+}
+
 const routeMap = [
     {
         path: '/',
@@ -18,6 +22,11 @@ const routeMap = [
     {
         path: '/asm_code',
         component: AsmCode,
+        exact: true,
+    },
+    {
+        path: '/list',
+        component: List,
         exact: true,
     },
     {

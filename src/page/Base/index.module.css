@@ -12,6 +12,10 @@
     width: 180px;
 }
 
+.menu_item {
+    background-color: antiquewhite;
+}
+
 .content {
     width: calc(100% - 180px);
     padding: 20px;
