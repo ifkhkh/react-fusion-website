@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Table } from '@alifd/next'
-import Request from '../../api/request'
-
-const log = console.log.bind(console)
+import React from 'react'
+// const log = console.log.bind(console)
 
 const Title = function (props) {
     // log('p', p)
