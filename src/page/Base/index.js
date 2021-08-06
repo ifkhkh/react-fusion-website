@@ -25,9 +25,8 @@ const Base = function () {
     })
 
     const handleHighlight = (t) => {
-        const c = (t === window.location.pathname)
-        ? _style.menu_item : ''
-        console.log('cc', c)
+        const c = t === window.location.pathname ? _style.menu_item : ''
+        // console.log('cc', c)
         return c
     }
 
