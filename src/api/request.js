@@ -40,6 +40,7 @@ class Request {
             }
             const t = setTimeout(() => {
                 resolve(resp)
+                clearTimeout(t)
             }, 300)
         })
     }

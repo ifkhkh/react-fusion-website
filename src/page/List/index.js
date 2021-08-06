@@ -8,7 +8,7 @@ const log = console.log.bind(console)
 const List = function () {
     const [data, setData] = useState([])
 
-    useEffect(() => {
+    const requestData = function () {
         Request.getList().then((res) => {
             log(res)
             if (res.success) {
@@ -16,7 +16,9 @@ const List = function () {
                 log('data', data)
             }
         })
-    }, [])
+    }
+
+    useEffect(requestData, [])
 
     return (
         <div>
