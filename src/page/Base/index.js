@@ -9,23 +9,39 @@ import { jumpHref } from '../../utils/utils'
 const menuList = [
     {
         path: '/',
-        name: '主页',
+        label: '主页',
+        key: 'home',
     },
     {
         // path: '/',
-        name: '子菜单',
+        label: '子菜单',
+        key: 'menu1',
         sub: [
             {
-                path: '/asm',
-                name: 'asm',
+                path: '/asm_code',
+                label: 'asm',
+                key: 'asm',
             },
             {
                 path: '/list',
-                name: 'List',
+                label: 'List',
+                key: 'list',
             },
             {
                 path: '/list2',
-                name: 'List2',
+                label: 'List2',
+                key: 'list2',
+            },
+        ],
+    },
+    {
+        label: '测试',
+        key: 'test',
+        sub: [
+            {
+                path: '/404',
+                label: 'error',
+                key: '404',
             },
         ],
     },
@@ -55,6 +71,50 @@ const Base = function () {
         return c
     }
 
+    const renderMenu = () => {
+        return (
+            <Menu className={_style.menu} defaultOpenKeys={['sub']}>
+                {menuList.map((it) => {
+                    console.log(it)
+                    const { path, label, sub, key } = it
+                    if (sub && sub.length > 0) {
+                        // 有 sub 说明有子选项, 就要处理成带子选项的
+
+                        // 根据 sub 渲染子菜单
+                        const subList = sub.map((subIt) => {
+                            // 这里解构语法跟上层的解构语法冲突了
+                            // path:subPath 就是类似
+                            // const subPath = subIt.path
+                            const { path: subPath, key: subKey, label: subLabel } = subIt
+                            return (
+                                <Menu.Item key={subKey} className={handleHighlight(subPath)}>
+                                    {subPath !== undefined ? (
+                                        <Link to={subPath}>{subLabel}</Link>
+                                    ) : (
+                                        subLabel
+                                    )}
+                                </Menu.Item>
+                            )
+                        })
+                        return (
+                            <Menu.SubMenu key={key} label={label}>
+                                {subList}
+                            </Menu.SubMenu>
+                        )
+                    } else {
+                        // 没有子选项就选染成一级菜单
+                        return (
+                            <Menu.Item key={key} className={handleHighlight(path)}>
+                                {/* 判断一下是否有 path, 有 path 的才需要写成 Link */}
+                                {path !== undefined ? <Link to={path}>{label}</Link> : label}
+                            </Menu.Item>
+                        )
+                    }
+                })}
+            </Menu>
+        )
+    }
+
     return (
         <div>
             <div>
@@ -78,24 +138,7 @@ const Base = function () {
                 </Nav>
             </div>
             <div className={_style.main}>
-                <Menu className={_style.menu} defaultOpenKeys={['sub']}>
-                    <Menu.Item key="1">
-                        <Link to={'/'}>主页</Link>
-                    </Menu.Item>
-                    <Menu.SubMenu key="sub" label="子菜单">
-                        <Menu.Item key="sub-1" className={handleHighlight('/asm_code')}>
-                            <Link to={'/asm_code'}>asm_code</Link>
-                        </Menu.Item>
-
-                        <Menu.Item key="sub-2" className={handleHighlight('/list')}>
-                            <Link to={'/list'}>List</Link>
-                        </Menu.Item>
-
-                        <Menu.Item key="sub-3" className={handleHighlight('/list2')}>
-                            <Link to={'/list2'}>List2</Link>
-                        </Menu.Item>
-                    </Menu.SubMenu>
-                </Menu>
+                {renderMenu()}
                 <div className={_style.content}>
                     <Switch>
                         {routes}
