@@ -26,14 +26,6 @@ const List = function () {
 
     useEffect(requestData, [])
 
-    // 编辑功能
-    // 1.点击编辑，弹出弹窗
-    // 2.弹窗显示表单点击行的文本内容
-    // 3.弹窗表单内容可编辑
-    // 4.弹窗内有两按钮：确定 取消
-    // 5.点击弹窗确定，关闭弹窗，更新表单
-    // 6.点击弹窗取消，关闭弹窗，不更新
-
     const editField = Field.useField()
 
     const onRemove = (id) => {

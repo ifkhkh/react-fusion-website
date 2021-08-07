@@ -1,6 +1,7 @@
 import React from 'react'
 import Asm from './Asm'
 import List from './List'
+import List2 from './List2'
 
 const Error = function () {
     return <div>404</div>
@@ -28,6 +29,11 @@ const routeMap = [
     {
         path: '/list',
         component: List,
+        exact: true,
+    },
+    {
+        path: '/list2',
+        component: List2,
         exact: true,
     },
     {

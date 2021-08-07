@@ -64,6 +64,9 @@ const Base = function () {
                         <Menu.Item key="sub-2" className={handleHighlight('/list')}>
                             <Link to={'/list'}>List</Link>
                         </Menu.Item>
+                        <Menu.Item key="sub-3" className={handleHighlight('/list')}>
+                            <Link to={'/list2'}>List2</Link>
+                        </Menu.Item>
                     </Menu.SubMenu>
                 </Menu>
                 <div className={_style.content}>
