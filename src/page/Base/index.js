@@ -6,6 +6,31 @@ import _style from './index.module.css'
 import __storage from '../../utils/storage'
 import { jumpHref } from '../../utils/utils'
 
+const menuList = [
+    {
+        path: '/',
+        name: '主页',
+    },
+    {
+        // path: '/',
+        name: '子菜单',
+        sub: [
+            {
+                path: '/asm',
+                name: 'asm',
+            },
+            {
+                path: '/list',
+                name: 'List',
+            },
+            {
+                path: '/list2',
+                name: 'List2',
+            },
+        ],
+    },
+]
+
 const Base = function () {
     const handleLogout = () => {
         __storage.set('_token', null)
