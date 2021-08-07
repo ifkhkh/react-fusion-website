@@ -1,57 +1,44 @@
-import React, { useState, useEffect } from 'react'
+import React, { Component } from 'react'
 import { Table, Field } from '@alifd/next'
 import Request from '../../api/request'
 import Title from '../../component/Title'
 import EditDialog from '../../component/EditDialog'
 
-const log = console.log.bind(console)
-
-const List = function () {
-    const [data, setData] = useState([])
-
-    const [activeData, setActiveData] = useState({
-        visible: false,
-        record: {},
-    })
-
-    const requestData = function () {
-        Request.getList().then((res) => {
-            log(res)
-            if (res.success) {
-                setData(res.data)
-                // log('data', data)
-            }
-        })
-    }
-
-    useEffect(requestData, [])
-
-    const editField = Field.useField()
-
-    const onRemove = (id) => {
-        // log(id)
-        let index = -1
-        data.forEach((item, i) => {
-            if (item.id === id) {
-                index = i
-            }
-        })
-        if (index !== -1) {
-            // log(data)
-            data.splice(index, 1)
-            // ？ setData(data) data更新，页面不渲染
-            setData(data.slice())
+export class List extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            dataSource: [],
+            activeData: {
+                visible: false,
+                record: {},
+            },
         }
     }
 
-    const renderOper = (value, index, record) => {
-        //
-        // log(value, index, record)
+    componentDidMount() {
+        // 获取 data
+        this.requestData()
+    }
+
+    editField = new Field(this)
+
+    requestData = () => {
+        Request.getList().then((res) => {
+            if (res.success) {
+                this.setState({ dataSource: res.data })
+            }
+        })
+    }
+
+    renderOper = (value, index, record) => {
+        // console.log(value, index, record)
         return (
             <div>
                 <span
                     onClick={() => {
-                        onOpen(record)
+                        console.log(value, index, record)
+                        this.onOpen(record)
                     }}
                 >
                     编辑
@@ -59,7 +46,7 @@ const List = function () {
 
                 <span
                     onClick={() => {
-                        onRemove(record.id)
+                        this.handleRemove(record.id)
                     }}
                 >
                     删除
@@ -68,24 +55,26 @@ const List = function () {
         )
     }
 
-    const onOpen = (record) => {
+    onOpen = (record) => {
         const d = {
             record: record,
             visible: true,
         }
-        setActiveData(d)
+        this.setState({ activeData: d })
     }
 
-    const onClose = () => {
+    handleClose = () => {
         const d = {
             record: {},
             visible: false,
         }
-        setActiveData(d)
+        this.setState({ activeData: d })
     }
 
-    const handleEditOk = (record) => {
+    handleEditOk = (record) => {
         // console.log(data, 'in handle ok')
+        let data = this.state.dataSource.slice()
+
         let index = -1
         data.forEach((element, i) => {
             if (record.id === element.id) {
@@ -97,31 +86,55 @@ const List = function () {
             // log(data)
             record.pigu = data[index].pigu
             data[index] = record
-            setData(data.slice())
+            // setData(data.slice())
+            this.setState({ dataSource: data })
         }
     }
 
-    return (
-        <div>
-            <Title title="列表页面1" subTitle="这里现实的是一个列表页面" borderColor="#ff0000" />
+    handleRemove = (id) => {
+        let data = this.state.dataSource.slice()
+        // log(id)
+        let index = -1
+        data.forEach((item, i) => {
+            if (item.id === id) {
+                index = i
+            }
+        })
+        if (index !== -1) {
+            // log(data)
+            data.splice(index, 1)
+            this.setState({ dataSource: data })
+        }
+    }
 
-            <Table.StickyLock dataSource={data}>
-                <Table.Column title="Id" dataIndex="id" />
-                <Table.Column title="Name" dataIndex="name" />
-                <Table.Column title="Hair" dataIndex="hair.color" />
-                <Table.Column title="Pigu" dataIndex="pigu" />
-                <Table.Column title="操作" cell={renderOper} />
-            </Table.StickyLock>
+    render() {
+        const { dataSource, activeData } = this.state
+        return (
+            <div>
+                <Title
+                    title="列表页面1"
+                    subTitle="这里现实的是一个列表页面"
+                    borderColor="#ff0000"
+                />
 
-            <EditDialog
-                visible={activeData.visible}
-                record={activeData.record}
-                editField={editField}
-                onClose={onClose}
-                onEditOk={handleEditOk}
-            />
-        </div>
-    )
+                <Table.StickyLock dataSource={dataSource}>
+                    <Table.Column title="Id" dataIndex="id" />
+                    <Table.Column title="Name" dataIndex="name" />
+                    <Table.Column title="Hair" dataIndex="hair.color" />
+                    <Table.Column title="Pigu" dataIndex="pigu" />
+                    <Table.Column title="操作" cell={this.renderOper} />
+                </Table.StickyLock>
+
+                <EditDialog
+                    visible={activeData.visible}
+                    record={activeData.record}
+                    editField={this.editField}
+                    onClose={this.handleClose}
+                    onEditOk={this.handleEditOk}
+                />
+            </div>
+        )
+    }
 }
 
 export default List

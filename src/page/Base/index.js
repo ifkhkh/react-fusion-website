@@ -61,10 +61,12 @@ const Base = function () {
                         <Menu.Item key="sub-1" className={handleHighlight('/asm_code')}>
                             <Link to={'/asm_code'}>asm_code</Link>
                         </Menu.Item>
+
                         <Menu.Item key="sub-2" className={handleHighlight('/list')}>
                             <Link to={'/list'}>List</Link>
                         </Menu.Item>
-                        <Menu.Item key="sub-3" className={handleHighlight('/list')}>
+
+                        <Menu.Item key="sub-3" className={handleHighlight('/list2')}>
                             <Link to={'/list2'}>List2</Link>
                         </Menu.Item>
                     </Menu.SubMenu>
