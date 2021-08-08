@@ -1,8 +1,19 @@
 import React, { Component } from 'react'
-import { Step, Button } from '@alifd/next'
+import { Field, Step, Button, Form, Input } from '@alifd/next'
 import { log } from '../../utils/utils'
+import _style from './index.module.css'
 
-const steps = [['Step 1'], ['Step 2'], ['Step 3']].map((item, index) => (
+const FormItem = Form.Item
+const formItemLayout = {
+    labelCol: {
+        fixedSpan: 8,
+    },
+    wrapperCol: {
+        span: 14,
+    },
+}
+
+const steps = [['学校信息'], ['个人信息'], ['工作信息']].map((item, index) => (
     <Step.Item
         aria-current={index === 1 ? 'step' : null}
         key={index}
@@ -18,26 +29,63 @@ class Process extends Component {
             currentIndex: 0,
         }
     }
+    formField = [new Field(this), new Field(this), new Field(this)]
 
-    handleLeftOrRight = (num) => {
+    handleLeft = () => {
+        const num = -1
         // num 1 or -1
         // 1 下一表单
         // -1 上一表单
         // start end 表单不能再切换
 
         let { currentIndex } = this.state
-        // console.log('num, currentIndex', num, currentIndex)
-        const notLeft = currentIndex === 0 && num === -1
-        const notRight = currentIndex === steps.length - 1 && num === 1
-        const toggleOk = !(notLeft || notRight)
+        // log('num, currentIndex', num, currentIndex)
 
-        if (toggleOk) {
-            log(11)
-            currentIndex = currentIndex + num
-            this.setState({
-                currentIndex,
-            })
-        }
+        currentIndex = currentIndex + num
+        this.setState({
+            currentIndex,
+        })
+    }
+    handleRight = () => {
+        const num = 1
+        // num 1 or -1
+        // 1 下一表单
+        // -1 上一表单
+        // start end 表单不能再切换
+
+        let { currentIndex } = this.state
+        // log('num, currentIndex', num, currentIndex)
+
+        this.formField[currentIndex].validate((errors, values) => {
+            console.log('validate', errors, values)
+            // errors 为 null 时，表单均填写
+            if (errors === null) {
+                currentIndex = currentIndex + num
+                this.setState({
+                    currentIndex,
+                })
+            }
+        })
+    }
+
+    handleSubmit = () => {
+        // log(this.formField[0].getValues())
+        // log(this.formField[0].getValue('schoolname'))
+        const f1 = this.formField[0].getValues()
+        const f2 = this.formField[1].getValues()
+        const f3 = this.formField[2].getValues()
+
+        let { currentIndex } = this.state
+
+        this.formField[currentIndex].validate((errors, values) => {
+            console.log('validate', errors, values)
+            // errors 为 null 时，表单均填写
+            if (errors === null) {
+                // 合并 3 表单为 1 个表单
+                let d = { ...f1, ...f2, ...f3 }
+                log('submit', d)
+            }
+        })
     }
 
     render() {
@@ -48,22 +96,78 @@ class Process extends Component {
                 <Step current={currentIndex} stretch shape="circle">
                     {steps}
                 </Step>
-                <Button
-                    className="basic-button"
-                    onClick={() => {
-                        this.handleLeftOrRight(-1)
-                    }}
+                <div className={_style.btns}>
+                    {currentIndex === 0 ? null : (
+                        <Button
+                            style={{ marginRight: '10px' }}
+                            className="basic-button"
+                            onClick={this.handleLeft}
+                        >
+                            left
+                        </Button>
+                    )}
+
+                    {currentIndex === steps.length - 1 ? null : (
+                        <Button
+                            style={{ marginRight: '10px' }}
+                            className="basic-button"
+                            onClick={this.handleRight}
+                        >
+                            right
+                        </Button>
+                    )}
+
+                    {currentIndex === steps.length - 1 ? (
+                        <Button className="basic-button" onClick={this.handleSubmit}>
+                            submit
+                        </Button>
+                    ) : null}
+                </div>
+
+                {/* 第1个表单 */}
+
+                <Form
+                    style={{ width: '60%', display: currentIndex === 0 ? 'block' : 'none' }}
+                    {...formItemLayout}
+                    field={this.formField[0]}
+                    colon
                 >
-                    left
-                </Button>
-                <Button
-                    className="basic-button"
-                    onClick={() => {
-                        this.handleLeftOrRight(1)
-                    }}
+                    <FormItem label="Schoolname" required>
+                        <Input name="schoolname" />
+                    </FormItem>
+
+                    <FormItem label="Location" required>
+                        <Input name="location" />
+                    </FormItem>
+                </Form>
+
+                {/* 第2个表单 */}
+                <Form
+                    style={{ width: '60%', display: currentIndex === 1 ? 'block' : 'none' }}
+                    {...formItemLayout}
+                    field={this.formField[1]}
+                    colon
                 >
-                    right
-                </Button>
+                    <FormItem label="Username" required>
+                        <Input name="baseUser" />
+                    </FormItem>
+
+                    <FormItem label="Age" required>
+                        <Input name="age" />
+                    </FormItem>
+                </Form>
+
+                {/* 第3个表单 */}
+                <Form
+                    style={{ width: '60%', display: currentIndex === 2 ? 'block' : 'none' }}
+                    {...formItemLayout}
+                    field={this.formField[2]}
+                    colon
+                >
+                    <FormItem label="CompanyName" required>
+                        <Input name="companyName" />
+                    </FormItem>
+                </Form>
             </div>
         )
     }
