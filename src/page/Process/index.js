@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Field, Step, Button, Form, Input } from '@alifd/next'
+import { Select, Field, Step, Button, Form, Input } from '@alifd/next'
 import { log } from '../../utils/utils'
 import _style from './index.module.css'
 
@@ -21,15 +21,29 @@ const steps = [['学校信息'], ['个人信息'], ['工作信息']].map((item, 
         content={item[1]}
     />
 ))
+const Option = Select.Option
+
+const sexInfo = {
+    male: ['m1', 'm2'],
+    female: ['f1', 'f2'],
+}
 
 class Process extends Component {
     constructor(props) {
         super(props)
         this.state = {
             currentIndex: 0,
+            select: 'male',
         }
     }
     formField = [new Field(this), new Field(this), new Field(this)]
+
+    onChange = (value) => {
+        const select = value
+        this.setState({
+            select,
+        })
+    }
 
     handleLeft = () => {
         const num = -1
@@ -46,6 +60,7 @@ class Process extends Component {
             currentIndex,
         })
     }
+
     handleRight = () => {
         const num = 1
         // num 1 or -1
@@ -57,7 +72,7 @@ class Process extends Component {
         // log('num, currentIndex', num, currentIndex)
 
         this.formField[currentIndex].validate((errors, values) => {
-            console.log('validate', errors, values)
+            // console.log('validate', errors, values)
             // errors 为 null 时，表单均填写
             if (errors === null) {
                 currentIndex = currentIndex + num
@@ -89,7 +104,10 @@ class Process extends Component {
     }
 
     render() {
-        const { currentIndex } = this.state
+        const { currentIndex, select } = this.state
+        const sexList = sexInfo[select]
+        const v = sexList[0]
+        log('select', select)
         return (
             <div>
                 <h3>Circle</h3>
@@ -138,6 +156,29 @@ class Process extends Component {
 
                     <FormItem label="Location" required>
                         <Input name="location" />
+                    </FormItem>
+                    <FormItem label="Select:">
+                        <Select
+                            name="sex"
+                            onChange={this.onChange}
+                            defaultValue={select}
+                            style={{ marginRight: 8 }}
+                        >
+                            <Option value="male">male</Option>
+                            <Option value="female">female</Option>
+                        </Select>
+                    </FormItem>
+
+                    <FormItem label="Select:">
+                        <Select name="sexValue" value={v} style={{ marginRight: 8 }}>
+                            {sexList.map((item, index) => {
+                                return (
+                                    <Option key={index} value={item}>
+                                        {item}
+                                    </Option>
+                                )
+                            })}
+                        </Select>
                     </FormItem>
                 </Form>
 
