@@ -10,4 +10,6 @@ const isLogin = () => {
     return token !== null
 }
 
-export { jumpHref, isLogin }
+const log = console.log.bind(this)
+
+export { jumpHref, isLogin, log }

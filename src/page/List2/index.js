@@ -4,7 +4,7 @@ import Request from '../../api/request'
 import Title from '../../component/Title'
 import EditDialog from '../../component/EditDialog'
 
-export class List extends Component {
+class List extends Component {
     constructor(props) {
         super(props)
         this.state = {

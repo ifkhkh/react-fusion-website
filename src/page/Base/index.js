@@ -45,6 +45,11 @@ const menuList = [
             },
         ],
     },
+    {
+        path: '/process',
+        label: 'process',
+        key: 'process',
+    },
 ]
 const headerList = [
     {
