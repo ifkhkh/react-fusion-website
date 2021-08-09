@@ -4,13 +4,19 @@ import List from './List'
 import List2 from './List2'
 import Process from './Process'
 import Slider from './Slider'
+import Test from '../component/Test'
 
 const Error = function () {
     return <div>404</div>
 }
 
 const Index = function () {
-    return <div>首页</div>
+    return (
+        <div>
+            首页
+            <Test txt={'dududu'} />
+        </div>
+    )
 }
 
 // const List = function() {
