@@ -1,0 +1,21 @@
+.visibleBox {
+    width: 300px;
+    overflow: auto;
+    box-shadow: 0 0 5px 0 rgb(0 0 0 / 10%);
+    height: 200px;
+    position: relative;
+    /* 居中方法 */
+    left: 50%;
+    transform: translateX(-50%);
+
+}
+.container {
+    width: 600px;
+    height: 10px;
+}
+
+.img {
+    width: 200px;
+    position: absolute;
+    transition: left 1s linear;
+}
