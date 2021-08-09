@@ -3,6 +3,7 @@ import Asm from './Asm'
 import List from './List'
 import List2 from './List2'
 import Process from './Process'
+import Slider from './Slider'
 
 const Error = function () {
     return <div>404</div>
@@ -40,6 +41,11 @@ const routeMap = [
     {
         path: '/process',
         component: Process,
+        exact: true,
+    },
+    {
+        path: '/slider',
+        component: Slider,
         exact: true,
     },
     {

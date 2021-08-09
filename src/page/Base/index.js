@@ -50,6 +50,11 @@ const menuList = [
         label: 'process',
         key: 'process',
     },
+    {
+        path: '/slider',
+        label: 'slider',
+        key: 'slider',
+    },
 ]
 const headerList = [
     {
